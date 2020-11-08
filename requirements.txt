@@ -1,0 +1,3 @@
+webbot>=0.34
+stdiomask
+pytz
