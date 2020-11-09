@@ -131,7 +131,7 @@ def main():
     print('...')
 
     scheduler = sched.scheduler(time.time, time.sleep)
-    scheduler.enterabs(target.timestamp(), 0, action, argument = (id, pw, booking_time)
+    scheduler.enterabs(target.timestamp(), 0, action, argument = (id, pw, booking_time))
     scheduler.run()
 
 if __name__ == "__main__":
