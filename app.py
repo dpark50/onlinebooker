@@ -36,6 +36,7 @@ def get_booking_time(id):
 
     return '[data-display="' + time + '"]'
 
+def action(id, pw, booking_time):
     driver = Browser()
     # Fill url
     driver.go_to('')
@@ -57,17 +58,19 @@ def get_booking_time(id):
     time.sleep(3)
     driver.scrolly(400)
     # TODO: Selectable time
-    driver.click(tag = 'button', css_selector = '[data-display="6:00AM - 7:00AM"]')
-    print('>>> Date and time selected')
+    # For testing
+    # driver.click(tag = 'button', css_selector = '[data-display="6:00AM - 7:00AM"]')
+    driver.click(tag = 'button', css_selector = '[data-display="' + booking_time + '"]')
 
     if driver.errors:
         print('Error')
         sys.exit(driver.errors)
 
+    print('>>> Date and time selected')
     time.sleep(4)
     # Scroll to bottom of dialog
     driver.execute_script('var modal = document.getElementById("codeOfConductModal"); ' \
-    'modal.scrollTop = modal.scrollHeight;')
+        'modal.scrollTop = modal.scrollHeight;')
     driver.click(tag = 'button', id = 'codeOfConductAgree', text = 'I Agree')
     print('>>> Agree to code of conduct')
     driver.click('Confirm', tag = 'button', id = 'confirmBookingButton')
