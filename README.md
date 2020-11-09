@@ -3,7 +3,7 @@
 
 [![](https://img.shields.io/pypi/pyversions/django.svg)](https://pypi.org/pypi/name/)
 
-Book local gym sessions online through your account. Bookings will be placed 7 days ahead when new slots are released.
+Book local gym sessions online through your account. Bookings will be placed 7 days ahead when new slots are released. Currently, you can only book for weekdays.
 
 ## Installation
 
