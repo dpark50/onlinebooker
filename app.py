@@ -57,10 +57,9 @@ def action(id, pw, booking_time):
     driver.click(id = 'coedStudio')
     time.sleep(3)
     driver.scrolly(400)
-    # TODO: Selectable time
     # For testing
     # driver.click(tag = 'button', css_selector = '[data-display="6:00AM - 7:00AM"]')
-    driver.click(tag = 'button', css_selector = '[data-display="' + booking_time + '"]')
+    driver.click(tag = 'button', css_selector = booking_time)
 
     if driver.errors:
         print('Error')
