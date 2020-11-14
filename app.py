@@ -87,14 +87,12 @@ def main():
           '[10] 7:30PM - 8:30PM\n' \
           '[11] 9:00PM - 10:00PM\n' \
           '[12] 10:30PM - 11:30PM\n')
-
-    booking_time = 1
+    booking_id = None
 
     while True:
         try:
             booking_id = int(input('Please select a time to book (displayed times are for weekdays):\n'))
             if booking_id >= 1 and booking_id <= 12:
-                booking_time = get_booking_time(booking_id)
                 break
         except ValueError:
             pass
@@ -106,13 +104,13 @@ def main():
     local_dt = pst_tz.normalize(dt.astimezone(pst_tz))
     print('Current time: ', local_dt)
     # For testing
-    # target = local_dt.replace(day = local_dt.day, hour = 0, minute = local_dt.minute + 1)
+    # target = local_dt.replace(day = local_dt.day, hour = local_dt.hour, minute = local_dt.minute, second = local_dt.second + 2)
     target = local_dt.replace(day = local_dt.day + 1, hour = 0, minute = 2)
     print('Scheduled for ', pst_tz.normalize(target.astimezone(pst_tz)))
     print('...')
 
     scheduler = sched.scheduler(time.time, time.sleep)
-    scheduler.enterabs(target.timestamp(), 0, action, argument = (id, pw, booking_time))
+    scheduler.enterabs(target.timestamp(), 0, action, argument = (id, pw, booking_id))
     scheduler.run()
 
 if __name__ == "__main__":
