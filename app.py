@@ -32,9 +32,15 @@ def action(id, pw, booking_id):
     location = driver.find_elements(id = 'js-search-location-default-club')[0].get_attribute('innerText')
     time.sleep(3)
 
-    if driver.errors:
-        print('Error')
-        sys.exit(driver.errors)
+    # Switch location
+    if location != constants.LOCATION:
+        print('>>> Switching locations')
+        driver.click(tag = 'a', id = 'js-search-filter-change')
+        driver.click(tag = 'section', id = 'section_clubs')
+        # Switch to correct location
+        driver.execute_script('document.querySelector(\'[data-clubnumber="243"]\').click()')
+        driver.click(id = 'js-filter-location-button-apply')
+        time.sleep(3)
 
     print('>>> Booking...')
     driver.click(tag = 'label', classname = 'c-filter__label', text = 'Co-ed')
