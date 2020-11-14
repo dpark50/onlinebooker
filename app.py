@@ -29,41 +29,40 @@ def action(id, pw, booking_id):
         print('ERROR: Unable to login (Email address or Barcode or Member ID not recognized)')
         return
 
-    # Select the newest date
-    driver.click(tag = 'div', classname = 'date-tile', number = 8)
-    driver.click(id = 'coedStudio')
+    location = driver.find_elements(id = 'js-search-location-default-club')[0].get_attribute('innerText')
     time.sleep(3)
-    driver.scrolly(400)
-    # For testing
-    # driver.click(tag = 'button', css_selector = '[data-display="6:00AM - 7:00AM"]')
-    driver.click(tag = 'button', css_selector = booking_time)
 
     if driver.errors:
         print('Error')
         sys.exit(driver.errors)
 
-    print('>>> Date and time selected')
-    time.sleep(4)
-    # Scroll to bottom of dialog
-    driver.execute_script('var modal = document.getElementById("codeOfConductModal"); ' \
-        'modal.scrollTop = modal.scrollHeight;')
-    driver.click(tag = 'button', id = 'codeOfConductAgree', text = 'I Agree')
-    print('>>> Agree to code of conduct')
-    driver.click('Confirm', tag = 'button', id = 'confirmBookingButton')
-    print('>>> Confirm booking')
+    print('>>> Booking...')
+    driver.click(tag = 'label', classname = 'c-filter__label', text = 'Co-ed')
     time.sleep(3)
-    # Close registered booking dialog
-    driver.click(xpath = '/html/body/form/div[4]/div[4]/div/div/button')
+    driver.click(classname = 'js-unordered-list-button-mobile')
+    # Select the newest day
+    driver.click(tag = 'li', css_selector = '[data-day="day-number-7"]')
+    optionsCount = len(driver.find_elements(xpath = constants.LAST_BOOKING_OPTIONS))
+    driver.click(xpath = get_selected_option(optionsCount, booking_id))
+
+    if driver.errors:
+        print('ERROR: Fully booked')
+        return
+
     time.sleep(2)
-
-    # Check if hamburger button exists. This contains the logout button.
-    if driver.exists(id = 'gl-mobile-nav'):
-        driver.click(tag = 'span', text = 'Menu', number = 1)
-        time.sleep(2)
-        driver.scrolly(700)
-
-    driver.click(id = 'logout')
+    # Scroll to bottom of modal
+    driver.execute_script('var element = document.getElementById("js-workout-booking-agreement-input"); ' \
+            'element.scrollIntoView()')
+    # Agreement
+    driver.execute_script('document.getElementById("js-workout-booking-agreement-input").click();')
+    time.sleep(2)
+    driver.click(text = 'Confirm')
+    print('>>> Booking confirmed')
+    time.sleep(2)
+    # Close confirmation dialog
+    driver.click(xpath = constants.CLOSE_DIALOG_PATH)
     print('>>> Logging out')
+    driver.click(tag = 'a', text = 'logout')
     print('>>> Finished')
 
 def main():
