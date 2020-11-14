@@ -5,38 +5,15 @@ import sched
 import time
 import pytz
 import sys
+import constants
 
-def get_booking_time(id):
-    time = None
+def get_selected_option(count, booking_id):
+    # 14 includes open workout as the first option
+    if count == 14:
+        return constants.LAST_BOOKING_OPTIONS.replace('li', 'li[' + str(booking_id + 1) + ']/div[2]/div/div[2]/div[1]/button')
+    return constants.LAST_BOOKING_OPTIONS.replace('li', 'li[' + str(booking_id) + ']/div[2]/div/div[2]/div[1]/button')
 
-    if id == 1:
-        time = '6:00AM - 7:00AM'
-    elif id == 2:
-        time = '7:30AM - 8:30AM'
-    elif id == 3:
-        time = '9:00AM - 10:00AM'
-    elif id == 4:
-        time = '10:30AM - 11:30AM'
-    elif id == 5:
-        time = '12:00PM - 1:00PM'
-    elif id == 6:
-        time = '1:30PM - 2:30PM'
-    elif id == 7:
-        time = '3:00PM - 4:00PM'
-    elif id == 8:
-        time = '4:30PM - 5:30PM'
-    elif id == 9:
-        time = '6:00PM - 7:00PM'
-    elif id == 10:
-        time = '7:30PM - 8:30PM'
-    elif id == 11:
-        time = '9:00PM - 10:00PM'
-    else:
-        time = '10:30PM - 11:30PM'
-
-    return '[data-display="' + time + '"]'
-
-def action(id, pw, booking_time):
+def action(id, pw, booking_id):
     driver = Browser()
     # Fill url
     driver.go_to('')
