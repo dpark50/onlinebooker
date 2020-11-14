@@ -15,19 +15,19 @@ def get_selected_option(count, booking_id):
 
 def action(id, pw, booking_id):
     driver = Browser()
-    # Fill url
-    driver.go_to('')
+    driver.go_to(constants.URL)
+    time.sleep(3)
+    driver.click(tag = 'a', text = 'Log in')
     print('>>> Logging in')
-    driver.type(id, into = 'Email/Member #')
-    driver.type(pw, into = 'Password')
-    driver.click(text = 'Login', id = 'btn-login')
-    time.sleep(4)
-    # Fill location
-    driver.click(text = '')
+    time.sleep(3)
+    driver.type(id, into = 'Enter Member ID, barcode or email address')
+    driver.type(pw, into = 'Enter password')
+    driver.click(xpath = constants.LOGIN_BUTTON_PATH)
+    time.sleep(10)
 
-    if driver.errors:
-        print('Error')
-        sys.exit(driver.errors)
+    if driver.exists(tag = 'span', text = 'Email address or Barcode or Member ID not recognized'):
+        print('ERROR: Unable to login (Email address or Barcode or Member ID not recognized)')
+        return
 
     # Select the newest date
     driver.click(tag = 'div', classname = 'date-tile', number = 8)
