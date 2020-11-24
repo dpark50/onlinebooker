@@ -5,88 +5,70 @@ import sched
 import time
 import pytz
 import sys
+import constants
 
-def get_booking_time(id):
-    time = None
+def get_selected_option(count, booking_id):
+    # 14 includes open workout as the first option
+    if count == 14:
+        return constants.LAST_BOOKING_OPTIONS.replace('li', 'li[' + str(booking_id + 1) + ']/div[2]/div/div[2]/div[1]/button')
+    return constants.LAST_BOOKING_OPTIONS.replace('li', 'li[' + str(booking_id) + ']/div[2]/div/div[2]/div[1]/button')
 
-    if id == 1:
-        time = '6:00AM - 7:00AM'
-    elif id == 2:
-        time = '7:30AM - 8:30AM'
-    elif id == 3:
-        time = '9:00AM - 10:00AM'
-    elif id == 4:
-        time = '10:30AM - 11:30AM'
-    elif id == 5:
-        time = '12:00PM - 1:00PM'
-    elif id == 6:
-        time = '1:30PM - 2:30PM'
-    elif id == 7:
-        time = '3:00PM - 4:00PM'
-    elif id == 8:
-        time = '4:30PM - 5:30PM'
-    elif id == 9:
-        time = '6:00PM - 7:00PM'
-    elif id == 10:
-        time = '7:30PM - 8:30PM'
-    elif id == 11:
-        time = '9:00PM - 10:00PM'
-    else:
-        time = '10:30PM - 11:30PM'
-
-    return '[data-display="' + time + '"]'
-
-def action(id, pw, booking_time):
+def action(id, pw, booking_id):
     driver = Browser()
-    # Fill url
-    driver.go_to('')
+    driver.go_to(constants.URL)
+    time.sleep(3)
+    driver.click(tag = 'a', text = 'Log in')
     print('>>> Logging in')
-    driver.type(id, into = 'Email/Member #')
-    driver.type(pw, into = 'Password')
-    driver.click(text = 'Login', id = 'btn-login')
-    time.sleep(4)
-    # Fill location
-    driver.click(text = '')
+    time.sleep(3)
+    driver.type(id, into = 'Enter Member ID, barcode or email address')
+    driver.type(pw, into = 'Enter password')
+    driver.click(xpath = constants.LOGIN_BUTTON_PATH)
+    time.sleep(10)
+
+    if driver.exists(tag = 'span', text = 'Email address or Barcode or Member ID not recognized'):
+        print('ERROR: Unable to login (Email address or Barcode or Member ID not recognized)')
+        return
+
+    location = driver.find_elements(id = 'js-search-location-default-club')[0].get_attribute('innerText')
+    time.sleep(3)
+
+    # Switch location
+    if location != constants.LOCATION:
+        print('>>> Switching locations')
+        driver.click(tag = 'a', id = 'js-search-filter-change')
+        driver.click(tag = 'section', id = 'section_clubs')
+        # Switch to correct location
+        driver.execute_script('document.querySelector(\'[data-clubnumber="243"]\').click()')
+        driver.click(id = 'js-filter-location-button-apply')
+        time.sleep(3)
+
+    print('>>> Booking...')
+    driver.click(tag = 'label', classname = 'c-filter__label', text = 'Co-ed')
+    time.sleep(3)
+    driver.click(classname = 'js-unordered-list-button-mobile')
+    # Select the newest day
+    driver.click(tag = 'li', css_selector = '[data-day="day-number-7"]')
+    optionsCount = len(driver.find_elements(xpath = constants.LAST_BOOKING_OPTIONS))
+    driver.click(xpath = get_selected_option(optionsCount, booking_id))
 
     if driver.errors:
-        print('Error')
-        sys.exit(driver.errors)
+        print('ERROR: Fully booked')
+        return
 
-    # Select the newest date
-    driver.click(tag = 'div', classname = 'date-tile', number = 8)
-    driver.click(id = 'coedStudio')
-    time.sleep(3)
-    driver.scrolly(400)
-    # For testing
-    # driver.click(tag = 'button', css_selector = '[data-display="6:00AM - 7:00AM"]')
-    driver.click(tag = 'button', css_selector = booking_time)
-
-    if driver.errors:
-        print('Error')
-        sys.exit(driver.errors)
-
-    print('>>> Date and time selected')
-    time.sleep(4)
-    # Scroll to bottom of dialog
-    driver.execute_script('var modal = document.getElementById("codeOfConductModal"); ' \
-        'modal.scrollTop = modal.scrollHeight;')
-    driver.click(tag = 'button', id = 'codeOfConductAgree', text = 'I Agree')
-    print('>>> Agree to code of conduct')
-    driver.click('Confirm', tag = 'button', id = 'confirmBookingButton')
-    print('>>> Confirm booking')
-    time.sleep(3)
-    # Close registered booking dialog
-    driver.click(xpath = '/html/body/form/div[4]/div[4]/div/div/button')
     time.sleep(2)
-
-    # Check if hamburger button exists. This contains the logout button.
-    if driver.exists(id = 'gl-mobile-nav'):
-        driver.click(tag = 'span', text = 'Menu', number = 1)
-        time.sleep(2)
-        driver.scrolly(700)
-
-    driver.click(id = 'logout')
+    # Scroll to bottom of modal
+    driver.execute_script('var element = document.getElementById("js-workout-booking-agreement-input"); ' \
+            'element.scrollIntoView()')
+    # Agreement
+    driver.execute_script('document.getElementById("js-workout-booking-agreement-input").click();')
+    time.sleep(2)
+    driver.click(text = 'Confirm')
+    print('>>> Booking confirmed')
+    time.sleep(2)
+    # Close confirmation dialog
+    driver.click(xpath = constants.CLOSE_DIALOG_PATH)
     print('>>> Logging out')
+    driver.click(tag = 'a', text = 'logout')
     print('>>> Finished')
 
 def main():
@@ -105,14 +87,12 @@ def main():
           '[10] 7:30PM - 8:30PM\n' \
           '[11] 9:00PM - 10:00PM\n' \
           '[12] 10:30PM - 11:30PM\n')
-
-    booking_time = 1
+    booking_id = None
 
     while True:
         try:
             booking_id = int(input('Please select a time to book (displayed times are for weekdays):\n'))
             if booking_id >= 1 and booking_id <= 12:
-                booking_time = get_booking_time(booking_id)
                 break
         except ValueError:
             pass
@@ -124,13 +104,13 @@ def main():
     local_dt = pst_tz.normalize(dt.astimezone(pst_tz))
     print('Current time: ', local_dt)
     # For testing
-    # target = local_dt.replace(day = local_dt.day, hour = 0, minute = local_dt.minute + 1)
+    # target = local_dt.replace(day = local_dt.day, hour = local_dt.hour, minute = local_dt.minute, second = local_dt.second + 2)
     target = local_dt.replace(day = local_dt.day + 1, hour = 0, minute = 2)
     print('Scheduled for ', pst_tz.normalize(target.astimezone(pst_tz)))
     print('...')
 
     scheduler = sched.scheduler(time.time, time.sleep)
-    scheduler.enterabs(target.timestamp(), 0, action, argument = (id, pw, booking_time))
+    scheduler.enterabs(target.timestamp(), 0, action, argument = (id, pw, booking_id))
     scheduler.run()
 
 if __name__ == "__main__":
