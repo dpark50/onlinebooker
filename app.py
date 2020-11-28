@@ -7,12 +7,6 @@ import pytz
 import sys
 import constants
 
-def get_selected_option(count, booking_id):
-    # 14 includes open workout as the first option
-    if count == 14:
-        return constants.LAST_BOOKING_OPTIONS.replace('li', 'li[' + str(booking_id + 1) + ']/div[2]/div/div[2]/div[1]/button')
-    return constants.LAST_BOOKING_OPTIONS.replace('li', 'li[' + str(booking_id) + ']/div[2]/div/div[2]/div[1]/button')
-
 def action(id, pw, booking_id):
     driver = Browser()
     driver.go_to(constants.URL)
@@ -49,7 +43,8 @@ def action(id, pw, booking_id):
     # Select the newest day
     driver.click(tag = 'li', css_selector = '[data-day="day-number-7"]')
     optionsCount = len(driver.find_elements(xpath = constants.LAST_BOOKING_OPTIONS))
-    driver.click(xpath = get_selected_option(optionsCount, booking_id))
+    print('>>> # of options: ' + optionsCount)
+    driver.click(xpath = constants.LAST_BOOKING_OPTIONS.replace('li', 'li[' + str(booking_id) + ']'))
 
     if driver.errors:
         print('ERROR: Fully booked')
