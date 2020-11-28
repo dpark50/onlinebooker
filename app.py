@@ -79,23 +79,25 @@ def main():
         print('\nPasswords do not match\n')
 
     print('[1] 6:00AM - 7:00AM\n' \
-          '[2] 7:30AM - 8:30AM\n' \
-          '[3] 9:00AM - 10:00AM\n' \
-          '[4] 10:30AM - 11:30AM\n' \
-          '[5] 12:00PM - 1:00PM\n' \
-          '[6] 1:30PM - 2:30PM\n' \
-          '[7] 3:00PM - 4:00PM\n' \
-          '[8] 4:30PM - 5:30PM\n' \
-          '[9] 6:00PM - 7:00PM\n' \
-          '[10] 7:30PM - 8:30PM\n' \
-          '[11] 9:00PM - 10:00PM\n' \
-          '[12] 10:30PM - 11:30PM\n')
+          '[2] 7:15AM - 8:15AM\n' \
+          '[3] 8:30AM - 9:30AM\n' \
+          '[4] 9:45AM - 10:45AM\n' \
+          '[5] 11:00AM - 12:00PM\n' \
+          '[6] 12:15PM - 1:15PM\n' \
+          '[7] 1:30PM - 2:30PM\n' \
+          '[8] 2:45PM - 3:45PM\n' \
+          '[9] 4:00PM - 5:00PM\n' \
+          '[10] 5:15PM - 6:15PM\n' \
+          '[11] 6:30PM - 7:30PM\n' \
+          '[12] 7:45PM - 8:45PM\n' \
+          '[13] 9:00PM - 10:00PM\n' \
+          '[14] 10:15PM - 11:15PM\n')
     booking_id = None
 
     while True:
         try:
             booking_id = int(input('Please select a time to book (displayed times are for weekdays):\n'))
-            if booking_id >= 1 and booking_id <= 12:
+            if booking_id >= 1 and booking_id <= 14:
                 break
         except ValueError:
             pass
