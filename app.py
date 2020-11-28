@@ -68,8 +68,16 @@ def action(id, pw, booking_id):
 
 def main():
     id = input('Enter id:\n')
-    # TODO: re-prompt
-    pw = stdiomask.getpass(prompt='Enter password:\n')
+
+    while True:
+        pw1 = stdiomask.getpass(prompt='Enter password:\n')
+        pw2 = stdiomask.getpass(prompt='Confirm password:\n')
+
+        if pw1 == pw2:
+            break
+
+        print('\nPasswords do not match\n')
+
     print('[1] 6:00AM - 7:00AM\n' \
           '[2] 7:30AM - 8:30AM\n' \
           '[3] 9:00AM - 10:00AM\n' \
@@ -105,7 +113,7 @@ def main():
     print('...')
 
     scheduler = sched.scheduler(time.time, time.sleep)
-    scheduler.enterabs(target.timestamp(), 0, action, argument = (id, pw, booking_id))
+    scheduler.enterabs(target.timestamp(), 0, action, argument = (id, pw1, booking_id))
     scheduler.run()
 
 if __name__ == "__main__":
