@@ -6,6 +6,23 @@ import time
 import pytz
 import sys
 import constants
+import calendar
+
+def getTargetDate(local_dt):
+    day = local_dt.day
+    month = local_dt.month
+    year = local_dt.year
+    days = calendar.monthrange(year, month)[1]
+
+    if day == days:
+        if month == 12:
+            month = 1
+        else:
+            month += 1
+        day = 0
+
+    return local_dt.replace(month = month, day = day + 1, hour = 0, minute = 2)
+
 
 def action(id, pw, booking_id):
     driver = Browser()
@@ -110,7 +127,7 @@ def main():
     print('Current time: ', local_dt)
     # For testing
     # target = local_dt.replace(day = local_dt.day, hour = local_dt.hour, minute = local_dt.minute, second = local_dt.second + 2)
-    target = local_dt.replace(day = local_dt.day + 1, hour = 0, minute = 2)
+    target = getTargetDate(local_dt)
     print('Scheduled for ', pst_tz.normalize(target.astimezone(pst_tz)))
     print('...')
 
