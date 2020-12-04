@@ -59,8 +59,10 @@ def action(id, pw, booking_id):
     driver.click(classname = 'js-unordered-list-button-mobile')
     # Select the newest day
     driver.click(tag = 'li', css_selector = '[data-day="day-number-7"]')
-    optionsCount = len(driver.find_elements(xpath = constants.LAST_BOOKING_OPTIONS))
-    print('>>> # of options: ' + optionsCount)
+
+    if driver.exists(tag = 'h5', text = 'Open Workout', xpath = constants.OPEN_WORKOUT_PATH):
+        booking_id = booking_id + 1
+
     driver.click(xpath = constants.LAST_BOOKING_OPTIONS.replace('li', 'li[' + str(booking_id) + ']'))
 
     if driver.errors:
