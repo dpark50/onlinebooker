@@ -98,23 +98,26 @@ def main():
     print('[1] 6:00AM - 7:00AM\n' \
           '[2] 7:15AM - 8:15AM\n' \
           '[3] 8:30AM - 9:30AM\n' \
-          '[4] 9:45AM - 10:45AM\n' \
-          '[5] 11:00AM - 12:00PM\n' \
-          '[6] 12:15PM - 1:15PM\n' \
-          '[7] 1:30PM - 2:30PM\n' \
-          '[8] 2:45PM - 3:45PM\n' \
-          '[9] 4:00PM - 5:00PM\n' \
-          '[10] 5:15PM - 6:15PM\n' \
-          '[11] 6:30PM - 7:30PM\n' \
-          '[12] 7:45PM - 8:45PM\n' \
-          '[13] 9:00PM - 10:00PM\n' \
-          '[14] 10:15PM - 11:15PM\n')
+          '[4] 9:45AM - 10:45AM\n')
+          # TODO: Allow for more options when website bug is fixed
+          # '[5] 11:00AM - 12:00PM\n' \
+          # '[6] 12:15PM - 1:15PM\n' \
+          # '[7] 1:30PM - 2:30PM\n' \
+          # '[8] 2:45PM - 3:45PM\n' \
+          # '[9] 4:00PM - 5:00PM\n' \
+          # '[10] 5:15PM - 6:15PM\n' \
+          # '[11] 6:30PM - 7:30PM\n' \
+          # '[12] 7:45PM - 8:45PM\n' \
+          # '[13] 9:00PM - 10:00PM\n' \
+          # '[14] 10:15PM - 11:15PM\n')
     booking_id = None
 
     while True:
         try:
             booking_id = int(input('Please select a time to book (displayed times are for weekdays):\n'))
-            if booking_id >= 1 and booking_id <= 14:
+            # TODO: Allow for more options when website bug is fixed
+            # if booking_id >= 1 and booking_id <= 14:
+            if booking_id >= 1 and booking_id <= 4:
                 break
         except ValueError:
             pass
